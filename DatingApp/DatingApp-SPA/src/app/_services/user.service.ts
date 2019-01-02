@@ -22,7 +22,7 @@ export class UserService {
     return this.http.get<User[]>(this.baseUrl + 'users');
   }
 
-  getUser(id): Observable<User> {
+  getUser(id: any): Observable<User> {
     return this.http.get<User>(this.baseUrl + 'users/' + id);
   }
 

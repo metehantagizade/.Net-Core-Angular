@@ -10,5 +10,6 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="2.2.0-preview3-35497"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.0-preview3-35497"/>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0"/>
+    <PackageReference Include="CloudinaryDotNet" Version="1.5.0"/>
   </ItemGroup>
 </Project>
