@@ -14,6 +14,7 @@ import { AuthService } from 'src/app/_services/auth.service';
 export class MemberEditComponent implements OnInit {
   @ViewChild('editForm') editForm: NgForm;
   user: User;
+  photoUrl: string;
   // code bellow used to prevent user dirty from closing browser window *********************************
   @HostListener('window:beforeunload', ['$event'])
   unloadNotification($event: any) {
@@ -21,7 +22,6 @@ export class MemberEditComponent implements OnInit {
       $event.returnValue = true;
     }
   }
-
 
   constructor(
     private route: ActivatedRoute,
@@ -34,6 +34,7 @@ export class MemberEditComponent implements OnInit {
     this.route.data.subscribe(data => {
       this.user = data['user'];
     });
+    this.authService.currentPhotoUrl.subscribe(photoUrl => this.photoUrl = photoUrl);
   }
 
   updateUser() {
@@ -45,4 +46,7 @@ export class MemberEditComponent implements OnInit {
     });
   }
 
+  updateMainPhoto(photoUrl) {
+    this.user.photoUrl = photoUrl;
+  }
 }

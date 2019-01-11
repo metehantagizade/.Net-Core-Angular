@@ -1,0 +1,15 @@
+FROM node:latest
+
+RUN mkdir /app
+WORKDIR /app
+
+COPY ./package.json ./
+#RUN npm install
+#COPY . .
+
+RUN npm install -g @angular/cli@latest
+RUN npm install
+
+COPY . /app
+
+CMD ng serve --host 0.0.0.0 --port 4200

@@ -84,7 +84,7 @@ namespace DatingApp.API
             //app.UseHttpsRedirection();
             //for seed example user data to user and photo table
             //seeder.SeedUsers();
-            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthentication();
             app.UseMvc();
         }

@@ -1,0 +1,19 @@
+version: '3'
+services:
+  dotnet:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./DatingApp.API
+    ports:
+      - '5000:80'
+    # volumes:
+    #   - ./DatingApp.API:/app
+  client:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./DatingApp-SPA
+    ports:
+      - '4200:4200'
+    volumes:
+      - /app/node_modules
+      - ./DatingApp-SPA:/app
