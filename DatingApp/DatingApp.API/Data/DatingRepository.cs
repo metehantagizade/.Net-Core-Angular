@@ -112,5 +112,49 @@ namespace DatingApp.API.Data
         {
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<Message> GetMessage(int id)
+        {
+            return await _context.Messages.FirstOrDefaultAsync(m => m.Id == id);
+        }
+
+        public async Task<PagedList<Message>> GetMessagesForUser(MessageParams messageParams)
+        {
+            var messages = _context.Messages
+                .Include(u => u.Sender)
+                .ThenInclude(u => u.Photos)
+                .Include(u => u.Recipient)
+                .ThenInclude(u => u.Photos)
+                .AsQueryable();
+
+            switch(messageParams.MessageContainer)
+            {
+                case "Inbox":
+                    messages = messages.Where(u => u.RecipientId == messageParams.UserId && u.RecioientDeleted == false);
+                    break;
+                case "Outbox":
+                    messages = messages.Where(u => u.SenderId == messageParams.UserId && u.SenderDeleted == false);
+                    break;
+                default:
+                    messages = messages.Where(u => u.RecipientId == messageParams.UserId && u.RecioientDeleted == false && u.IsRead == false);
+                    break;
+            }
+
+            messages = messages.OrderByDescending(d => d.MessageSent);
+            return await PagedList<Message>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
+        }
+
+        public async Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId)
+        {
+            var messages = await _context.Messages
+                .Include(u => u.Sender).ThenInclude(u => u.Photos)
+                .Include(u => u.Recipient).ThenInclude(u => u.Photos)
+                .Where(w => w.RecipientId == userId && w.RecioientDeleted == false && w.SenderId == recipientId 
+                        || w.RecipientId == recipientId && w.SenderDeleted == false && w.SenderId == userId)
+                .OrderByDescending(o => o.MessageSent)
+                .ToListAsync();
+
+            return messages;
+        }
     }
 }
