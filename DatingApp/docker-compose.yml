@@ -1,19 +1,63 @@
-version: '3'
+# version: '3'
+# services:
+#   dotnet:
+#     build:
+#       dockerfile: Dockerfile.dev
+#       context: ./DatingApp.API
+#     ports:
+#       - '5000:80'
+#     # volumes:
+#     #   - ./DatingApp.API:/app
+#   client:
+#     build:
+#       dockerfile: Dockerfile.dev
+#       context: ./DatingApp-SPA
+#     ports:
+#       - '4200:4200'
+#     volumes:
+#       - /app/node_modules
+#       - ./DatingApp-SPA:/app
+version: '3.1'
+
 services:
-  dotnet:
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./DatingApp.API
+
+  elasticsearch:
+   image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
+   container_name: elasticsearch
+   ports:
+    - "9200:9200"
+   volumes:
+    - elasticsearch-data:/usr/share/elasticsearch/data
+   networks:
+    - docker-network
+
+  kibana:
+   image: docker.elastic.co/kibana/kibana:6.2.4
+   container_name: kibana
+   ports:
+    - "5601:5601"
+   depends_on:
+    - elasticsearch
+   networks:
+    - docker-network
+  
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    container_name: mssql
     ports:
-      - '5000:80'
-    # volumes:
-    #   - ./DatingApp.API:/app
-  client:
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./DatingApp-SPA
-    ports:
-      - '4200:4200'
+    - "1433:1433"
     volumes:
-      - /app/node_modules
-      - ./DatingApp-SPA:/app
+    - FishApp_Volume:/var/lib/docker/volumes/FishApp_Volume/_data
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Metehan1234!?"
+    networks:
+    - docker-network
+  
+networks:
+  docker-network:
+    driver: bridge
+
+volumes:
+  elasticsearch-data:
+  FishApp_Volume:

@@ -1,3 +1,38 @@
 dotnet watch run
 dotnet ef migrations add InitialCreate
 dotnet ef database update
+
+deploy projects:
+In angular.json file change outputPath to ../DatingApp.API/wwwroot
+Build angular project by running "ng build"
+
+Add codes below to startup.cs file
+-app.UseDefaultFiles();
+-app.UseStaticFiles();
+
+No we can reach to angular project from localhost:5000
+After surfe on project and press refresh on browser with changed url, we will get an error because changed url used from angular not .net core
+
+By adding extra configuration on app.UseMvc and create Fallback controller every thing will work perfect
+---------------
+
+Now its time to build angular application as production mode(in develop mode it add some extra file like angular compiler on deploy folder)
+
+ng build --prod
+* In some javascript animation like alertify animation dose not work, to solve this problem use command below
+ng build --prod --build-optimizer=false
+
+-------------------------
+To publish .net core project
+- dotnet publish -o ..\..\foldername
+
+--------------------
+"ConnectionStrings": {
+    "DefaultConnection": "Server=myServerAddress;Database=myDataBase;User Id=myUsername;password=myPassword;Trusted_Connection=False;MultipleActiveResultSets=true;"
+  }
+  
+----------------------
+To set local domain name go to C:\Windows\System32\drivers\etc
+open hosts
+add line below to end of the file
+127.0.0.1           datingapp.com
