@@ -20,6 +20,8 @@ namespace DatingApp.API.Controllers
             _context = context;
 
         }
+
+        [Authorize(Roles = "Admin, Moderator")]
         [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetValues()
@@ -36,6 +38,7 @@ namespace DatingApp.API.Controllers
             return Ok(values);
         }
 
+        [Authorize(Roles = "Admin")]
         // POST api/values
         [HttpPost]
         public void Post([FromBody] string value)

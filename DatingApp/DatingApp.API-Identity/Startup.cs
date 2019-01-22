@@ -69,6 +69,14 @@ namespace DatingApp.API
                     ValidateAudience = false
                 };
             });
+
+            // After integrate Role nabagement to project, to allow access some action to the role without using policy we have to add [Authorize(Roles = "Admin")] on every action method
+            // By using policy we can use it as configurations below and add [Authorize(Policy = "RequiredAdminRole")] on actions method (AdminController)
+            services.AddAuthorization(optioons => {
+                optioons.AddPolicy("RequiredAdminRole", policy => policy.RequireRole("Admin"));
+                optioons.AddPolicy("ModeratePhotoRole", policy => policy.RequireRole("Admin", "Moderator"));
+                optioons.AddPolicy("VipOnly", policy => policy.RequireRole("VIP"));
+            });
             
             // Add option configuration to code below is being to config global authorization on project. There is no need to [Authorize in every controller] *Identity*
             // For AuthController we need to add [AllowAnonymous] *Identity*
@@ -97,7 +105,7 @@ namespace DatingApp.API
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.AddAutoMapper();
             services.AddTransient<Seed>();
-            services.AddScoped<IAuthRepository, AuthRepository>();
+            // services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IDatingRepository, DatingRepository>();
 
             services.AddScoped<LogUserActivity>();
@@ -132,7 +140,7 @@ namespace DatingApp.API
 
             //app.UseHttpsRedirection();
             //for seed example user data to user and photo table
-            //seeder.SeedUsers();
+            seeder.SeedUsers();
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthentication();
@@ -142,6 +150,7 @@ namespace DatingApp.API
             // By go to localhost:5000 address we can serve angular project 
             app.UseStaticFiles();
             // When a route doesn't match the routes that MVC already knows about it then its going to use MapSpaFallbackRoute below
+            // It used to publish Angular project inside wwwroot folder
             app.UseMvc(route =>
             {
                 route.MapSpaFallbackRoute(
