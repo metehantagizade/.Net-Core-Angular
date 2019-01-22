@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using DatingApp.API.Models;
 using Newtonsoft.Json;
 
@@ -23,7 +24,7 @@ namespace DatingApp.API.Data
                 user.PasswordHash = passwordHash;
                 user.PasswordSalt = passwordSalt;
                 user.Username = user.Username.ToLower();
-
+                user.Photos.SingleOrDefault().IsApproved = true;
                 _context.Users.Add(user);
 
             }
